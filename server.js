@@ -1,10 +1,16 @@
-const { ApolloServer, gql } = require("apollo-server");
+const { ApolloServer, PubSub } = require("apollo-server");
 const mongoose = require("mongoose");
 
 const { typeDefs, resolvers } = require("./graphql");
 const Game = require("./models/Game");
 
-const server = new ApolloServer({ typeDefs, resolvers });
+const pubsub = new PubSub();
+
+const server = new ApolloServer({
+  typeDefs,
+  resolvers,
+  context: ({ req }) => ({ req, pubsub }),
+});
 
 mongoose
   .connect("mongodb://localhost:27017/tic-tac", {
@@ -16,7 +22,12 @@ mongoose
     console.log(res.url);
     return Game.findOne({});
   })
-  .then((game) => console.log(game))
+  .then((game) => {
+    // console.log(game);
+    // game.players = [];
+    // game.save();
+    console.log(game);
+  })
   .catch((err) => console.log(err));
 
 //notes:

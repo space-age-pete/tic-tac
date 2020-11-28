@@ -7,6 +7,7 @@ const GameSchema = new Schema({
       name: {
         type: String,
         unique: true,
+        //not really working, more validation needed
         required: true,
       },
       turn: Boolean,

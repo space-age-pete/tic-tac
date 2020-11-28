@@ -21,6 +21,6 @@ module.exports = gql`
   }
 
   type Subscription {
-    game: Game!
+    renameGame: Game!
   }
 `;
