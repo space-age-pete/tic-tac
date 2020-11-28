@@ -1,7 +1,11 @@
 import React, { useRef, useState } from "react";
 import { useMutation, useSubscription } from "@apollo/client";
 import "./index.css";
-import { ADD_PLAYER_MUTATION, GAME_SUBSCRIPTION } from "./utils/graphql";
+import {
+  ADD_PLAYER_MUTATION,
+  GAME_SUBSCRIPTION,
+  CLEAR_PLAYERS_MUTATION,
+} from "./utils/graphql";
 //please branch
 
 function App() {
@@ -18,6 +22,8 @@ function App() {
     },
     variables: { name },
   });
+
+  const [clearPlayers] = useMutation(CLEAR_PLAYERS_MUTATION);
 
   const {
     // data: { renameGame },
@@ -45,6 +51,7 @@ function App() {
           Register
         </button>
       </div>
+      <button onClick={clearPlayers}>Start Over</button>
       {/* {!loading && JSON.stringify(data.renameGame, null, 2)} */}
       <ul>
         {!loading &&

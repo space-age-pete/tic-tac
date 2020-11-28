@@ -18,6 +18,7 @@ module.exports = gql`
 
   type Mutation {
     joinGame(name: String!): String!
+    clearPlayers: String!
   }
 
   type Subscription {

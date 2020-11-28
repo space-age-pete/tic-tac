@@ -13,7 +13,7 @@ module.exports = {
       const id = dbGame.players.length + 1;
       const turn = id === 1 ? true : false;
 
-      if (id === 10) return "game full";
+      if (id === 3) return "game full";
 
       dbGame.players.push({ name, id, turn });
 
@@ -21,6 +21,13 @@ module.exports = {
 
       pubsub.publish(GAME_CHANGE, { renameGame: dbGame });
       return `You've joined the Game, ${name}!`;
+    },
+    clearPlayers: async (_, __, { pubsub }) => {
+      const dbGame = await Game.findOne({});
+      dbGame.players = [];
+      dbGame.save();
+      pubsub.publish(GAME_CHANGE, { renameGame: dbGame });
+      return `NO MORE PLAYERS`;
     },
   },
   Subscription: {

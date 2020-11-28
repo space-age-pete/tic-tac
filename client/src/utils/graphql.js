@@ -32,9 +32,9 @@ export const INCREMENT_RACER_WINS_MUTATION = gql`
   }
 `;
 
-export const DELETE_RACER_MUTATION = gql`
-  mutation killRacer($id: ID!) {
-    killRacer(id: $id)
+export const CLEAR_PLAYERS_MUTATION = gql`
+  mutation {
+    clearPlayers
   }
 `;
 
