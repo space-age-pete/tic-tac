@@ -1,12 +1,7 @@
 import React, { useRef, useState } from "react";
-// import { useQuery, useMutation } from "@apollo/client";
+import { useMutation, useSubscription } from "@apollo/client";
 import "./index.css";
-// import {
-//   DELETE_RACER_MUTATION,
-//   FETCH_RACERS_QUERY,
-//   INCREMENT_RACER_WINS_MUTATION,
-//   REGISTER_RACER_MUTATION,
-// } from "./utils/graphql";
+import { ADD_PLAYER_MUTATION, GAME_SUBSCRIPTION } from "./utils/graphql";
 //please branch
 
 function App() {
@@ -16,52 +11,19 @@ function App() {
 
   // const { data, data: { racers } = {} } = useQuery(FETCH_RACERS_QUERY);
 
-  // const [registerRacer] = useMutation(REGISTER_RACER_MUTATION, {
-  //   onCompleted() {
-  //     // nameRef.current.value = "";
-  //     setCar("");
-  //     setName("");
-  //   },
-  //   update(cache, { data }) {
-  //     const existingRacers = cache.readQuery({
-  //       query: FETCH_RACERS_QUERY,
-  //     });
-  //     console.log(existingRacers, data);
-  //     //data.racers = [result.data.registerRacer, ...data.racers];
-  //     cache.writeQuery({
-  //       query: FETCH_RACERS_QUERY,
-  //       data: { racers: [...existingRacers.racers, data.registerRacer] },
-  //     });
-  //   },
-  //   // refetchQueries: [{ query: FETCH_RACERS_QUERY }],
-  //   variables: { name, car },
-  // });
+  const [joinGame] = useMutation(ADD_PLAYER_MUTATION, {
+    onCompleted() {
+      // nameRef.current.value = "";
+      setName("");
+    },
+    variables: { name },
+  });
 
-  // const [winRace] = useMutation(INCREMENT_RACER_WINS_MUTATION);
-
-  // const [killRacer, { error: killError }] = useMutation(
-  //   DELETE_RACER_MUTATION,
-  //   {}
-  // );
-
-  // const kill = (id) => {
-  //   // let id = event.target.dataset.id;
-  //   console.log(typeof id);
-  //   killRacer({
-  //     update(cache) {
-  //       const existingRacers = cache.readQuery({
-  //         query: FETCH_RACERS_QUERY,
-  //       });
-  //       cache.writeQuery({
-  //         query: FETCH_RACERS_QUERY,
-  //         data: {
-  //           racers: existingRacers.racers.filter((racer) => racer.id !== id),
-  //         },
-  //       });
-  //     },
-  //     variables: { id },
-  //   });
-  // };
+  const {
+    // data: { renameGame },
+    data,
+    loading,
+  } = useSubscription(GAME_SUBSCRIPTION);
 
   // if (!data) return null;
   // if (killError) {
@@ -79,10 +41,19 @@ function App() {
           value={name}
           onChange={(e) => setName(e.target.value)}
         />
-        <button onClick={() => ""} style={{ marginTop: "10px" }}>
+        <button onClick={joinGame} style={{ marginTop: "10px" }}>
           Register
         </button>
       </div>
+      {/* {!loading && JSON.stringify(data.renameGame, null, 2)} */}
+      <ul>
+        {!loading &&
+          data.renameGame.players.map(({ name, id, turn }) => (
+            <li key={id} style={turn ? { fontWeight: "bold" } : {}}>
+              {name}
+            </li>
+          ))}
+      </ul>
     </div>
   );
 }

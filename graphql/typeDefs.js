@@ -24,3 +24,6 @@ module.exports = gql`
     renameGame: Game!
   }
 `;
+
+//have subscription take in room/game id as a variable/parameter so it
+//knows which room to watch

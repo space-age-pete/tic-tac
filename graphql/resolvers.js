@@ -25,7 +25,12 @@ module.exports = {
   },
   Subscription: {
     renameGame: {
-      subscribe: (_, __, { pubsub }) => {
+      subscribe: async (_, __, { pubsub }) => {
+        const dbGame = await Game.findOne({});
+        setTimeout(
+          () => pubsub.publish(GAME_CHANGE, { renameGame: dbGame }),
+          0
+        );
         return pubsub.asyncIterator(GAME_CHANGE);
       },
     },
