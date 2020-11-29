@@ -20,7 +20,7 @@ mongoose
   .then(() => server.listen({ port: 5000 }))
   .then((res) => {
     console.log(res.url);
-    return Game.findOne({});
+    return Game.find({});
   })
   .then((game) => {
     // console.log(game);

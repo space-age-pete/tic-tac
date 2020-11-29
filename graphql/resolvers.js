@@ -1,4 +1,5 @@
 const { Game } = require("../models");
+const { db } = require("../models/Game");
 
 const GAME_CHANGE = "GAME_CHANGE";
 
@@ -9,25 +10,33 @@ module.exports = {
   Mutation: {
     joinGame: async (_, { name }, { pubsub }) => {
       const dbGame = await Game.findOne({});
+      console.log(dbGame);
+      console.log(dbGame.player1);
 
-      const id = dbGame.players.length + 1;
-      const turn = id === 1 ? true : false;
-
-      if (id === 3) return "game full";
-
-      dbGame.players.push({ name, id, turn });
+      if (!dbGame.player1.name) dbGame.player1 = { name };
+      else if (!dbGame.player2.name) dbGame.player2 = { name };
+      else return "game full";
 
       dbGame.save();
 
       pubsub.publish(GAME_CHANGE, { renameGame: dbGame });
       return `You've joined the Game, ${name}!`;
+      //start game proper
+      //gameStatus in model?
     },
     clearPlayers: async (_, __, { pubsub }) => {
       const dbGame = await Game.findOne({});
-      dbGame.players = [];
+      dbGame.player1 = {};
+      dbGame.player2 = {};
+      dbGame.turn = "player1";
       dbGame.save();
       pubsub.publish(GAME_CHANGE, { renameGame: dbGame });
       return `NO MORE PLAYERS`;
+    },
+    makeMove: async (_, { id }, { pubsub }) => {
+      const dbGame = await Game.findOne({});
+      console.log(dbGame.turn, id);
+      if (dbGame.turn !== id) return "It's not your turn";
     },
   },
   Subscription: {
@@ -43,3 +52,30 @@ module.exports = {
     },
   },
 };
+
+// joinGame: async (_, { name }, { pubsub }) => {
+//   const dbGame = await Game.findOne({});
+
+//   const id = dbGame.players.length + 1;
+//   const turn = id === 1 ? true : false;
+
+//   if (id === 3) return "game full";
+//   if (dbGame.players.find((p) => p.name === name))
+//     return "someone else has that name";
+
+//   //why am i using names for tic-tac-toe?
+//   dbGame.players.push({ name, id, turn });
+
+//   dbGame.save();
+
+//   pubsub.publish(GAME_CHANGE, { renameGame: dbGame });
+//   return `You've joined the Game, ${name}!`;
+// },
+
+// clearPlayers: async (_, __, { pubsub }) => {
+//   const dbGame = await Game.findOne({});
+//   dbGame.players = [];
+//   dbGame.save();
+//   pubsub.publish(GAME_CHANGE, { renameGame: dbGame });
+//   return `NO MORE PLAYERS`;
+// },

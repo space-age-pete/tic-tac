@@ -2,14 +2,15 @@ const { gql } = require("apollo-server");
 
 module.exports = gql`
   type Player {
-    id: ID!
-    name: String!
-    turn: Boolean!
+    name: String
+    turn: Boolean
   }
 
   type Game {
     id: ID!
-    players: [Player]
+    player1: Player
+    player2: Player
+    turn: String!
   }
 
   type Query {
@@ -19,6 +20,7 @@ module.exports = gql`
   type Mutation {
     joinGame(name: String!): String!
     clearPlayers: String!
+    makeMove(name: String!): String!
   }
 
   type Subscription {
@@ -26,5 +28,19 @@ module.exports = gql`
   }
 `;
 
+// `type Player {
+//   id: ID!
+//   name: String!
+//   turn: Boolean!
+// }
+
+// type Game {
+//   id: ID!
+//   players: [Player]
+// }`
+
 //have subscription take in room/game id as a variable/parameter so it
 //knows which room to watch
+
+//returning strings mostly because I don't know how to deal with error/
+// /return errors and correct responses both
