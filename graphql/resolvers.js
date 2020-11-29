@@ -14,8 +14,11 @@ module.exports = {
       console.log(dbGame.player1);
 
       if (!dbGame.player1.name) dbGame.player1 = { name };
-      else if (!dbGame.player2.name) dbGame.player2 = { name };
-      else return "game full";
+      else if (dbGame.player1.name === name) return "choose a different name";
+      else if (!dbGame.player2.name) {
+        dbGame.player2 = { name };
+        dbGame.turn = "player" + Math.floor(Math.random() * 2 + 1);
+      } else return "game full";
 
       dbGame.save();
 
@@ -28,7 +31,7 @@ module.exports = {
       const dbGame = await Game.findOne({});
       dbGame.player1 = {};
       dbGame.player2 = {};
-      dbGame.turn = "player1";
+      dbGame.turn = "";
       dbGame.save();
       pubsub.publish(GAME_CHANGE, { renameGame: dbGame });
       return `NO MORE PLAYERS`;

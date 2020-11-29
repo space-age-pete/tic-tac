@@ -44,11 +44,13 @@ export const GAME_SUBSCRIPTION = gql`
   subscription {
     renameGame {
       id
-      players {
+      player1 {
         name
-        id
-        turn
       }
+      player2 {
+        name
+      }
+      turn
     }
   }
 `;

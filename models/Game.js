@@ -31,8 +31,9 @@ const GameSchema = new Schema({
   },
   turn: {
     type: String,
-    default: "player1",
+    // default: "player1",
   },
+
   //board: null,
 });
 
