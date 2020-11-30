@@ -1,28 +1,33 @@
 import React from "react";
+import "./GameBoard.css";
 
 const s = {
   container: {
     display: "grid",
     gridTemplateColumns: "50px 50px 50px",
     gridTemplateRows: "50px 50px 50px",
+    columnGap: "4px",
+    rowGap: "4px",
+    backgroundColor: "black",
   },
-  box: {},
+  box: {
+    backgroundColor: "white",
+    textAlign: "center",
+    paddingTop: "15px",
+  },
 };
 
-function GameBoard({ board }) {
+function GameBoard({ board, moveHandler }) {
   return (
     <div style={s.container}>
-      {/* <div>1</div>
-      <div>2</div>
-      <div>3</div>
-      <div>4</div>
-      <div>5</div>
-      <div>6</div>
-      <div>7</div>
-      <div>8</div>
-      <div>9</div> */}
       {board.flat().map((mark, i) => (
-        <div key={i} id={i + 1}>
+        <div
+          key={i}
+          id={i + 1}
+          style={s.box}
+          className="square"
+          onClick={moveHandler}
+        >
           {mark || ""}
         </div>
       ))}
@@ -31,3 +36,5 @@ function GameBoard({ board }) {
 }
 
 export default GameBoard;
+
+//possibly incorporate fancy/smart hover stuff

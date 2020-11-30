@@ -5,6 +5,7 @@ import {
   ADD_PLAYER_MUTATION,
   GAME_SUBSCRIPTION,
   CLEAR_PLAYERS_MUTATION,
+  MAKE_MOVE_MUTATION,
 } from "./utils/graphql";
 
 import GameBoard from "./GameBoard";
@@ -24,19 +25,22 @@ function App() {
     variables: { name },
   });
 
+  const [makeMove] = useMutation(MAKE_MOVE_MUTATION);
+
   const [clearPlayers] = useMutation(CLEAR_PLAYERS_MUTATION);
 
-  const {
-    // data: { renameGame },
-    data,
-    loading,
-  } = useSubscription(GAME_SUBSCRIPTION);
+  const { data, loading } = useSubscription(GAME_SUBSCRIPTION);
+
+  const moveHandler = (event) => {
+    event.preventDefault();
+    const num = event.target.id;
+    const x = num > 6 ? 2 : num > 3 ? 1 : 0;
+    const y = !(num % 3) ? 2 : !((num + 1) % 3) ? 1 : 0;
+
+    makeMove({ variables: { name, x, y } });
+  };
 
   if (!data) return <h4>LOADING...</h4>;
-  // if (killError) {
-  //   console.log(killError);
-  //   return null;
-  // }
 
   let { player1, player2, turn, board } = data.renameGame;
   board = JSON.parse(board);
@@ -71,7 +75,7 @@ function App() {
             <h3>Player 1: {player1.name || "waiting..."}</h3>
             {turn === "player1" && <p>It's your turn!</p>}
           </div>
-          <GameBoard board={board} />
+          <GameBoard board={board} moveHandler={moveHandler} />
           <div>
             <h3>Player 2: {player2.name || "waiting..."}</h3>
             {turn === "player2" && <p>It's your turn!</p>}

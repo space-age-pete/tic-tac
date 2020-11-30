@@ -1,18 +1,5 @@
 import { gql } from "@apollo/client";
 
-//QUERIES:
-
-export const FETCH_RACERS_QUERY = gql`
-  query {
-    racers {
-      name
-      car
-      id
-      wins
-    }
-  }
-`;
-
 //MUTATIONS:
 
 export const ADD_PLAYER_MUTATION = gql`
@@ -21,20 +8,15 @@ export const ADD_PLAYER_MUTATION = gql`
   }
 `;
 
-export const INCREMENT_RACER_WINS_MUTATION = gql`
-  mutation winRace($id: ID!) {
-    winRace(id: $id) {
-      id
-      name
-      car
-      wins
-    }
-  }
-`;
-
 export const CLEAR_PLAYERS_MUTATION = gql`
   mutation {
     clearPlayers
+  }
+`;
+
+export const MAKE_MOVE_MUTATION = gql`
+  mutation makeMove($name: String!, $x: Int!, $y: Int!) {
+    makeMove(name: $name, x: $x, y: $y)
   }
 `;
 
