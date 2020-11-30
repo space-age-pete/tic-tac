@@ -10,7 +10,8 @@ module.exports = gql`
     id: ID!
     player1: Player
     player2: Player
-    turn: String!
+    turn: String
+    board: String!
   }
 
   type Query {
@@ -20,7 +21,7 @@ module.exports = gql`
   type Mutation {
     joinGame(name: String!): String!
     clearPlayers: String!
-    makeMove(name: String!): String!
+    makeMove(name: String!, x: Int!, y: Int!): String!
   }
 
   type Subscription {

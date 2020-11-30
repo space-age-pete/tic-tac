@@ -6,7 +6,8 @@ import {
   GAME_SUBSCRIPTION,
   CLEAR_PLAYERS_MUTATION,
 } from "./utils/graphql";
-//please branch
+
+import GameBoard from "./GameBoard";
 
 function App() {
   const nameRef = useRef(null);
@@ -37,7 +38,8 @@ function App() {
   //   return null;
   // }
 
-  const { player1, player2, turn } = data.renameGame;
+  let { player1, player2, turn, board } = data.renameGame;
+  board = JSON.parse(board);
 
   return (
     <div>
@@ -69,6 +71,7 @@ function App() {
             <h3>Player 1: {player1.name || "waiting..."}</h3>
             {turn === "player1" && <p>It's your turn!</p>}
           </div>
+          <GameBoard board={board} />
           <div>
             <h3>Player 2: {player2.name || "waiting..."}</h3>
             {turn === "player2" && <p>It's your turn!</p>}

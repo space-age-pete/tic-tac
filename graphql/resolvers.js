@@ -36,10 +36,23 @@ module.exports = {
       pubsub.publish(GAME_CHANGE, { renameGame: dbGame });
       return `NO MORE PLAYERS`;
     },
-    makeMove: async (_, { id }, { pubsub }) => {
+    makeMove: async (_, { name, x, y }, { pubsub }) => {
       const dbGame = await Game.findOne({});
-      console.log(dbGame.turn, id);
-      if (dbGame.turn !== id) return "It's not your turn";
+
+      if (!dbGame.turn) return "The Game has not yet begun";
+      if (dbGame[dbGame.turn].name !== name) return "It is not your turn!";
+
+      let board = JSON.parse(dbGame.board);
+      if (board[x][y]) return "already a mark there";
+
+      board[x][y] = dbGame.turn;
+      dbGame.board = JSON.stringify(board);
+      dbGame.turn = dbGame.turn === "player1" ? "player2" : "player1";
+
+      dbGame.save();
+      pubsub.publish(GAME_CHANGE, { renameGame: dbGame });
+
+      return `${name} made a move!`;
     },
   },
   Subscription: {

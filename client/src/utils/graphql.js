@@ -51,6 +51,7 @@ export const GAME_SUBSCRIPTION = gql`
         name
       }
       turn
+      board
     }
   }
 `;
