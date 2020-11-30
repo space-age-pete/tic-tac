@@ -21,8 +21,10 @@ function GameBoard({ board }) {
       <div>7</div>
       <div>8</div>
       <div>9</div> */}
-      {board.flatMap((num) => (
-        <div key={num}>{num}</div>
+      {board.flat().map((mark, i) => (
+        <div key={i} id={i + 1}>
+          {mark || ""}
+        </div>
       ))}
     </div>
   );

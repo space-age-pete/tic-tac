@@ -45,13 +45,29 @@ module.exports = {
       let board = JSON.parse(dbGame.board);
       if (board[x][y]) return "already a mark there";
 
-      board[x][y] = dbGame.turn;
+      board[x][y] = dbGame.turn === "player1" ? "X" : "O";
+
+      let winner = "";
+      let valid = [0, 1, 2];
+      if (!valid.includes(x) || !valid.includes(y)) return "Not a valid move";
+      if (
+        (board[x][0] === board[x][1] && board[x][1] === board[x][2]) ||
+        (board[0][y] === board[1][y] && board[1][y] === board[2][y]) ||
+        ((x + y) % 2 === 0 &&
+          board[1][1] &&
+          ((board[0][0] === board[1][1] && board[1][1] === board[2][2]) ||
+            (board[0][2] === board[1][1] && board[1][1] === board[2][0])))
+      ) {
+        winner = dbGame.turn;
+      }
+
       dbGame.board = JSON.stringify(board);
       dbGame.turn = dbGame.turn === "player1" ? "player2" : "player1";
 
       dbGame.save();
       pubsub.publish(GAME_CHANGE, { renameGame: dbGame });
 
+      if (winner) return `${name} won the game!`;
       return `${name} made a move!`;
     },
   },
