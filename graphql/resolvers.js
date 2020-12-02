@@ -28,11 +28,15 @@ module.exports = {
       //gameStatus in model?
     },
     clearPlayers: async (_, __, { pubsub }) => {
-      const dbGame = await Game.findOne({});
-      dbGame.player1 = {};
-      dbGame.player2 = {};
-      dbGame.turn = "";
-      dbGame.save();
+      // const dbGame = await Game.findOne({});
+      // dbGame.player1 = {};
+      // dbGame.player2 = {};
+      // dbGame.turn = "";
+      //for Now:
+      await Game.findOneAndDelete({});
+      const dbGame = Game.create({});
+
+      // dbGame.save();
       pubsub.publish(GAME_CHANGE, { renameGame: dbGame });
       return `NO MORE PLAYERS`;
     },
@@ -41,13 +45,14 @@ module.exports = {
 
       if (!dbGame.turn) return "The Game has not yet begun";
       if (dbGame[dbGame.turn].name !== name) return "It is not your turn!";
+      if (dbGame.winner) return "The Game has ended";
 
       let board = JSON.parse(dbGame.board);
       if (board[x][y]) return "already a mark there";
 
       board[x][y] = dbGame.turn === "player1" ? "X" : "O";
 
-      let winner = "";
+      //let winner = "";
       let valid = [0, 1, 2];
       if (!valid.includes(x) || !valid.includes(y)) return "Not a valid move";
       if (
@@ -58,7 +63,9 @@ module.exports = {
           ((board[0][0] === board[1][1] && board[1][1] === board[2][2]) ||
             (board[0][2] === board[1][1] && board[1][1] === board[2][0])))
       ) {
-        winner = dbGame.turn;
+        dbGame.winner = dbGame[dbGame.turn].name;
+        // dbGame.gameOver = true;
+        //admit
       }
 
       dbGame.board = JSON.stringify(board);
@@ -67,7 +74,7 @@ module.exports = {
       dbGame.save();
       pubsub.publish(GAME_CHANGE, { renameGame: dbGame });
 
-      if (winner) return `${name} won the game!`;
+      if (dbGame.winner) return `${name} won the game!`;
       return `${name} made a move!`;
     },
   },

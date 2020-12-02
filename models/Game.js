@@ -33,6 +33,11 @@ const GameSchema = new Schema({
     type: String,
     default: board,
   },
+  // gameOver: {
+  //   type: Boolean,
+  //   default: false,
+  // },
+  winner: String,
 });
 
 GameSchema.methods.checkForWin = function (x, y) {

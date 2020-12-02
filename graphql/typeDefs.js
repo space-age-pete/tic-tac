@@ -12,6 +12,7 @@ module.exports = gql`
     player2: Player
     turn: String
     board: String!
+    winner: String
   }
 
   type Query {

@@ -42,11 +42,37 @@ function App() {
 
   if (!data) return <h4>LOADING...</h4>;
 
-  let { player1, player2, turn, board } = data.renameGame;
+  let {
+    renameGame: { player1, player2, turn, board, winner },
+    renameGame,
+  } = data;
   board = JSON.parse(board);
+
+  function titleDisplay() {
+    if (winner) return `${winner} Wins!`;
+    if (!turn) return "Waiting For Players to Join";
+    if (renameGame[turn].name === name) return "Make Your Move!";
+    return `It's ${renameGame[turn].name}'s Turn`;
+  }
 
   return (
     <div>
+      {!loading && (
+        <>
+          <h1 style={{ textAlign: "center" }}>{titleDisplay()}</h1>
+          <div style={{ display: "flex", justifyContent: "space-around" }}>
+            <div>
+              <h3>Player 1: {player1.name || "waiting..."}</h3>
+              {turn === "player1" && <p>It's your turn!</p>}
+            </div>
+            <GameBoard board={board} moveHandler={moveHandler} />
+            <div>
+              <h3>Player 2: {player2.name || "waiting..."}</h3>
+              {turn === "player2" && <p>It's your turn!</p>}
+            </div>
+          </div>
+        </>
+      )}
       <div className="form">
         <label htmlFor="nameInput">Name:</label>
         <input
@@ -60,28 +86,6 @@ function App() {
         </button>
       </div>
       <button onClick={clearPlayers}>Start Over</button>
-      {/* {!loading && JSON.stringify(data, null, 2)} */}
-      {/* <ul>
-        {!loading &&
-          data.renameGame.players.map(({ name, id, turn }) => (
-            <li key={id} style={turn ? { fontWeight: "bold" } : {}}>
-              {name}
-            </li>
-          ))}
-      </ul> */}
-      {!loading && (
-        <div style={{ display: "flex", justifyContent: "space-around" }}>
-          <div>
-            <h3>Player 1: {player1.name || "waiting..."}</h3>
-            {turn === "player1" && <p>It's your turn!</p>}
-          </div>
-          <GameBoard board={board} moveHandler={moveHandler} />
-          <div>
-            <h3>Player 2: {player2.name || "waiting..."}</h3>
-            {turn === "player2" && <p>It's your turn!</p>}
-          </div>
-        </div>
-      )}
     </div>
   );
 }

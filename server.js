@@ -37,3 +37,9 @@ mongoose
 //Forget about rooms for now?
 //add later: ability to create room or join room (spectate?)
 //limit array to 2 people through mongoose?
+
+//TODOs:
+//add resign feature? or just new game in general?
+//add gameover functionality
+//jwt
+//errors!!!

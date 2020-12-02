@@ -34,6 +34,7 @@ export const GAME_SUBSCRIPTION = gql`
       }
       turn
       board
+      winner
     }
   }
 `;
