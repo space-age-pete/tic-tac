@@ -38,6 +38,10 @@ const GameSchema = new Schema({
   //   default: false,
   // },
   winner: String,
+  markCount: {
+    type: Number,
+    default: 0,
+  },
 });
 
 GameSchema.methods.checkForWin = function (x, y) {

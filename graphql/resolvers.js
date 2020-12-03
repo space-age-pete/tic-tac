@@ -45,15 +45,16 @@ module.exports = {
       const dbGame = await Game.findOne({});
 
       if (!dbGame.turn) throw new Error("The Game has not yet begun");
+      if (dbGame.winner) throw new Error("The Game has ended");
       if (dbGame[dbGame.turn].name !== name)
         throw new Error("It is not your turn!");
-      if (dbGame.winner) throw new Error("The Game has ended");
       // if (dbGame.winner) return "The Game has ended";
 
       let board = JSON.parse(dbGame.board);
       if (board[x][y]) throw new Error("already a mark there");
 
       board[x][y] = dbGame.turn === "player1" ? "X" : "O";
+      dbGame.markCount++;
 
       //let winner = "";
       let valid = [0, 1, 2];
@@ -70,6 +71,8 @@ module.exports = {
         dbGame.winner = dbGame[dbGame.turn].name;
         // dbGame.gameOver = true;
         //admit
+      } else if (dbGame.markCount === 9) {
+        dbGame.winner = "It's a Cat's Game!";
       }
 
       dbGame.board = JSON.stringify(board);

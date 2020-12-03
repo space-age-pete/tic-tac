@@ -63,6 +63,7 @@ function App() {
   board = JSON.parse(board);
 
   function titleDisplay() {
+    if (winner === "It's a Cat's Game!") return winner;
     if (winner) return `${winner} Wins!`;
     if (!turn) return "Waiting For Players to Join";
     if (renameGame[turn].name === name) return "Make Your Move!";
