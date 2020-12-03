@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { useMutation, useSubscription } from "@apollo/client";
 import "./index.css";
 import {
@@ -14,6 +14,12 @@ function App() {
   const nameRef = useRef(null);
 
   const [name, setName] = useState("");
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    console.log("this ran");
+    if (error) setTimeout(() => setError(""), 1000);
+  }, [error]);
 
   // const { data, data: { racers } = {} } = useQuery(FETCH_RACERS_QUERY);
 
@@ -22,10 +28,18 @@ function App() {
       // nameRef.current.value = "";
       //setName("");
     },
+    onError: (err) => {
+      setError(err.graphQLErrors?.[0]?.message);
+    },
     variables: { name },
   });
 
-  const [makeMove] = useMutation(MAKE_MOVE_MUTATION);
+  const [makeMove] = useMutation(MAKE_MOVE_MUTATION, {
+    onError: (err) => {
+      console.log(JSON.stringify(err));
+      setError(err.graphQLErrors[0].message);
+    },
+  });
 
   const [clearPlayers] = useMutation(CLEAR_PLAYERS_MUTATION);
 
@@ -56,23 +70,34 @@ function App() {
   }
 
   return (
-    <div>
+    <div style={{ textAlign: "center" }}>
       {!loading && (
-        <>
-          <h1 style={{ textAlign: "center" }}>{titleDisplay()}</h1>
-          <div style={{ display: "flex", justifyContent: "space-around" }}>
+        <div>
+          <h1>{titleDisplay()}</h1>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-around",
+            }}
+          >
             <div>
-              <h3>Player 1: {player1.name || "waiting..."}</h3>
-              {turn === "player1" && <p>It's your turn!</p>}
+              <h1>X</h1>
+              <h3>{player1.name || "waiting..."}</h3>
+              {player1.name === name && <p>(You)</p>}
             </div>
             <GameBoard board={board} moveHandler={moveHandler} />
             <div>
-              <h3>Player 2: {player2.name || "waiting..."}</h3>
-              {turn === "player2" && <p>It's your turn!</p>}
+              <h1>O</h1>
+              <h3>{player2.name || "waiting..."}</h3>
+              {player2.name === name && <p>(You)</p>}
             </div>
           </div>
-        </>
+          <div style={{ height: "20px", margin: "25px", color: "red" }}>
+            {error}
+          </div>
+        </div>
       )}
+
       <div className="form">
         <label htmlFor="nameInput">Name:</label>
         <input

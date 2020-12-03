@@ -14,11 +14,12 @@ module.exports = {
       console.log(dbGame.player1);
 
       if (!dbGame.player1.name) dbGame.player1 = { name };
-      else if (dbGame.player1.name === name) return "choose a different name";
+      else if (dbGame.player1.name === name)
+        throw new Error("choose a different name");
       else if (!dbGame.player2.name) {
         dbGame.player2 = { name };
         dbGame.turn = "player" + Math.floor(Math.random() * 2 + 1);
-      } else return "game full";
+      } else throw new Error("game full");
 
       dbGame.save();
 
@@ -43,18 +44,21 @@ module.exports = {
     makeMove: async (_, { name, x, y }, { pubsub }) => {
       const dbGame = await Game.findOne({});
 
-      if (!dbGame.turn) return "The Game has not yet begun";
-      if (dbGame[dbGame.turn].name !== name) return "It is not your turn!";
-      if (dbGame.winner) return "The Game has ended";
+      if (!dbGame.turn) throw new Error("The Game has not yet begun");
+      if (dbGame[dbGame.turn].name !== name)
+        throw new Error("It is not your turn!");
+      if (dbGame.winner) throw new Error("The Game has ended");
+      // if (dbGame.winner) return "The Game has ended";
 
       let board = JSON.parse(dbGame.board);
-      if (board[x][y]) return "already a mark there";
+      if (board[x][y]) throw new Error("already a mark there");
 
       board[x][y] = dbGame.turn === "player1" ? "X" : "O";
 
       //let winner = "";
       let valid = [0, 1, 2];
-      if (!valid.includes(x) || !valid.includes(y)) return "Not a valid move";
+      if (!valid.includes(x) || !valid.includes(y))
+        throw new Error("Not a valid move");
       if (
         (board[x][0] === board[x][1] && board[x][1] === board[x][2]) ||
         (board[0][y] === board[1][y] && board[1][y] === board[2][y]) ||
