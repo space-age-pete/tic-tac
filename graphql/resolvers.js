@@ -1,7 +1,19 @@
+const jwt = require("jsonwebtoken");
+
 const { Game } = require("../models");
-const { db } = require("../models/Game");
 
 const GAME_CHANGE = "GAME_CHANGE";
+
+function generateToken(name, id) {
+  return jwt.sign(
+    {
+      name,
+      id,
+    },
+    process.env.JWT_SECRET,
+    { expiresIn: "1h" }
+  );
+}
 
 module.exports = {
   Query: {
@@ -12,7 +24,7 @@ module.exports = {
       const dbGame = await Game.findOne({});
       console.log(dbGame);
       console.log(dbGame.player1);
-
+      if (!name.trim().length) throw new Error("that's not a name");
       if (!dbGame.player1.name) dbGame.player1 = { name };
       else if (dbGame.player1.name === name)
         throw new Error("choose a different name");
@@ -23,10 +35,12 @@ module.exports = {
 
       dbGame.save();
 
+      const token = generateToken(name, dbGame._id);
+
       pubsub.publish(GAME_CHANGE, { renameGame: dbGame });
-      return `You've joined the Game, ${name}!`;
-      //start game proper
-      //gameStatus in model?
+      // return `You've joined the Game, ${name}!`;
+
+      return token;
     },
     clearPlayers: async (_, __, { pubsub }) => {
       // const dbGame = await Game.findOne({});

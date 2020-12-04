@@ -7,6 +7,7 @@ import {
   CLEAR_PLAYERS_MUTATION,
   MAKE_MOVE_MUTATION,
 } from "./utils/graphql";
+import jwtDecode from "jwt-decode";
 
 import GameBoard from "./GameBoard";
 
@@ -24,9 +25,12 @@ function App() {
   // const { data, data: { racers } = {} } = useQuery(FETCH_RACERS_QUERY);
 
   const [joinGame] = useMutation(ADD_PLAYER_MUTATION, {
-    onCompleted() {
+    onCompleted({ joinGame: token }) {
       // nameRef.current.value = "";
       //setName("");
+      console.log("huh????");
+      console.log(token);
+      console.log(jwtDecode(token));
     },
     onError: (err) => {
       setError(err.graphQLErrors?.[0]?.message);
