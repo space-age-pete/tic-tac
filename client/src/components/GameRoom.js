@@ -1,18 +1,15 @@
-import React, { useRef, useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useMutation, useSubscription } from "@apollo/client";
 import {
-  ADD_PLAYER_MUTATION,
+  // ADD_PLAYER_MUTATION,
   GAME_SUBSCRIPTION,
   CLEAR_PLAYERS_MUTATION,
   MAKE_MOVE_MUTATION,
 } from "../utils/graphql";
-import jwtDecode from "jwt-decode";
 
 import GameBoard from "./GameBoard";
 
 function GameRoom({ gameId, name, quit }) {
-  const nameRef = useRef(null);
-
   // const [name, setName] = useState("");
   const [error, setError] = useState("");
 

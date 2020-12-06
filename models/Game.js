@@ -28,19 +28,19 @@ const GameSchema = new Schema({
     type: String,
     // default: "player1",
   },
-
   board: {
     type: String,
     default: board,
   },
-  // gameOver: {
-  //   type: Boolean,
-  //   default: false,
-  // },
   winner: String,
   markCount: {
     type: Number,
     default: 0,
+  },
+  code: {
+    type: String,
+    required: true,
+    unique: true,
   },
 });
 

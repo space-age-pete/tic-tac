@@ -1,10 +1,10 @@
-import React, { useRef, useState, useEffect } from "react";
-import { useMutation, useSubscription } from "@apollo/client";
+import React, { useState, useEffect } from "react";
+import { useMutation } from "@apollo/client";
 import {
   ADD_PLAYER_MUTATION,
-  GAME_SUBSCRIPTION,
-  CLEAR_PLAYERS_MUTATION,
-  MAKE_MOVE_MUTATION,
+  // GAME_SUBSCRIPTION,
+  // CLEAR_PLAYERS_MUTATION,
+  // MAKE_MOVE_MUTATION,
 } from "../utils/graphql";
 import jwtDecode from "jwt-decode";
 

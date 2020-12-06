@@ -13,6 +13,7 @@ module.exports = gql`
     turn: String
     board: String!
     winner: String
+    code: String!
   }
 
   type Query {

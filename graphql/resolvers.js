@@ -2,6 +2,7 @@ const jwt = require("jsonwebtoken");
 
 const { Game } = require("../models");
 const checkAuth = require("../utils/check-auth");
+const generateCode = require("../utils/generate-code");
 
 const GAME_CHANGE = "GAME_CHANGE";
 
@@ -50,7 +51,10 @@ module.exports = {
       // dbGame.turn = "";
       //for Now:
       await Game.findOneAndDelete({});
-      const dbGame = Game.create({});
+
+      //technically needs to check but like come on
+      const code = generateCode();
+      const dbGame = Game.create({ code });
 
       // dbGame.save();
       pubsub.publish(GAME_CHANGE, { renameGame: dbGame });
