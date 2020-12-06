@@ -13,6 +13,7 @@ import {
 } from "@apollo/client";
 
 import App from "./App";
+import "./index.css";
 
 const wsLink = new WebSocketLink({
   uri: `ws://localhost:5000/graphql`,
