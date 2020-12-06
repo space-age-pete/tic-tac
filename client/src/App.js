@@ -28,9 +28,9 @@ function App() {
     onCompleted({ joinGame: token }) {
       // nameRef.current.value = "";
       //setName("");
-      console.log("huh????");
       console.log(token);
       console.log(jwtDecode(token));
+      localStorage.setItem("jwtToken", token);
     },
     onError: (err) => {
       setError(err.graphQLErrors?.[0]?.message);

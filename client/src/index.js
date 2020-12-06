@@ -1,6 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import { WebSocketLink } from "@apollo/client/link/ws";
+import { setContext } from "@apollo/client/link/context";
 import { getMainDefinition } from "@apollo/client/utilities";
 import {
   ApolloProvider,
@@ -8,6 +9,7 @@ import {
   ApolloClient,
   HttpLink,
   split,
+  // setContext
 } from "@apollo/client";
 
 import App from "./App";
@@ -21,6 +23,15 @@ const wsLink = new WebSocketLink({
 
 const httpLink = new HttpLink({
   uri: "http://localhost:5000",
+});
+
+const authLink = setContext(() => {
+  const token = localStorage.getItem("jwtToken");
+  return {
+    headers: {
+      Authorization: token ? `Bearer ${token}` : "",
+    },
+  };
 });
 
 const splitLink = split(
@@ -37,7 +48,7 @@ const splitLink = split(
 
 const client = new ApolloClient({
   // link: httpLink,
-  link: splitLink,
+  link: authLink.concat(splitLink),
   cache: new InMemoryCache(),
 });
 

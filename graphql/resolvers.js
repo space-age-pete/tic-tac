@@ -1,6 +1,7 @@
 const jwt = require("jsonwebtoken");
 
 const { Game } = require("../models");
+const checkAuth = require("../utils/check-auth");
 
 const GAME_CHANGE = "GAME_CHANGE";
 
@@ -55,8 +56,11 @@ module.exports = {
       pubsub.publish(GAME_CHANGE, { renameGame: dbGame });
       return `NO MORE PLAYERS`;
     },
-    makeMove: async (_, { name, x, y }, { pubsub }) => {
+    makeMove: async (_, { name, x, y }, { req, pubsub }) => {
       const dbGame = await Game.findOne({});
+
+      const player = await checkAuth(req);
+      console.log("player", player);
 
       if (!dbGame.turn) throw new Error("The Game has not yet begun");
       if (dbGame.winner) throw new Error("The Game has ended");
