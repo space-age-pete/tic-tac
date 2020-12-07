@@ -22,10 +22,11 @@ module.exports = {
     game: async () => await Game.findOne({}),
   },
   Mutation: {
-    joinGame: async (_, { name }, { pubsub }) => {
-      const dbGame = await Game.findOne({});
+    joinGame: async (_, { name, code }, { pubsub }) => {
+      const dbGame = await Game.findOne({ code });
       console.log(dbGame);
-      console.log(dbGame.player1);
+      if (!dbGame) throw new Error("Invalid Code");
+
       if (!name.trim().length) throw new Error("that's not a name");
       if (!dbGame.player1.name) dbGame.player1 = { name };
       else if (dbGame.player1.name === name)
@@ -44,6 +45,27 @@ module.exports = {
 
       return token;
     },
+    newGame: async (_, { name }, { pubsub }) => {
+      const code = generateCode();
+      console.log(code);
+      try {
+        const dbGame = await Game.create({
+          code,
+          player1: { name },
+        });
+        // dbGame.player1 = { name };
+        // dbGame.save();
+
+        console.log(dbGame);
+        const token = generateToken(name, dbGame._id);
+        return token;
+      } catch (err) {
+        console.log(err);
+        throw err;
+      }
+
+      return "whatever";
+    },
     clearPlayers: async (_, __, { pubsub }) => {
       // const dbGame = await Game.findOne({});
       // dbGame.player1 = {};
@@ -53,11 +75,11 @@ module.exports = {
       await Game.findOneAndDelete({});
 
       //technically needs to check but like come on
-      const code = generateCode();
-      const dbGame = Game.create({ code });
+      // const code = generateCode();
+      // const dbGame = Game.create({ code });
 
-      // dbGame.save();
-      pubsub.publish(GAME_CHANGE, { renameGame: dbGame });
+      // // dbGame.save();
+      // pubsub.publish(GAME_CHANGE, { renameGame: dbGame });
       return `NO MORE PLAYERS`;
     },
     makeMove: async (_, { name, x, y }, { req, pubsub }) => {

@@ -3,7 +3,6 @@ const { gql } = require("apollo-server");
 module.exports = gql`
   type Player {
     name: String
-    turn: Boolean
   }
 
   type Game {
@@ -21,9 +20,10 @@ module.exports = gql`
   }
 
   type Mutation {
-    joinGame(name: String!): String!
+    joinGame(name: String!, code: String!): String!
     clearPlayers: String!
     makeMove(name: String!, x: Int!, y: Int!): String!
+    newGame(name: String!): String!
   }
 
   type Subscription {

@@ -11,18 +11,18 @@ const GameSchema = new Schema({
   player1: {
     name: {
       type: String,
-      unique: true,
+      // unique: true,
       // required: true,
     },
-    turn: Boolean,
+    // turn: Boolean,
   },
   player2: {
     name: {
       type: String,
-      unique: true,
+      // unique: true,
       // required: true,
     },
-    turn: Boolean,
+    // turn: Boolean,
   },
   turn: {
     type: String,

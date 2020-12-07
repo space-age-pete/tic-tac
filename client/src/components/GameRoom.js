@@ -18,22 +18,6 @@ function GameRoom({ gameId, name, quit }) {
     if (error) setTimeout(() => setError(""), 1000);
   }, [error]);
 
-  // const { data, data: { racers } = {} } = useQuery(FETCH_RACERS_QUERY);
-
-  // const [joinGame] = useMutation(ADD_PLAYER_MUTATION, {
-  //   onCompleted({ joinGame: token }) {
-  //     // nameRef.current.value = "";
-  //     //setName("");
-  //     console.log(token);
-  //     console.log(jwtDecode(token));
-  //     localStorage.setItem("jwtToken", token);
-  //   },
-  //   onError: (err) => {
-  //     setError(err.graphQLErrors?.[0]?.message);
-  //   },
-  //   variables: { name },
-  // });
-
   const [makeMove] = useMutation(MAKE_MOVE_MUTATION, {
     onError: (err) => {
       console.log(JSON.stringify(err));
@@ -57,7 +41,7 @@ function GameRoom({ gameId, name, quit }) {
   if (!data) return <h4>LOADING...</h4>;
 
   let {
-    renameGame: { player1, player2, turn, board, winner },
+    renameGame: { player1, player2, turn, board, winner, code },
     renameGame,
   } = data;
   board = JSON.parse(board);
@@ -74,7 +58,8 @@ function GameRoom({ gameId, name, quit }) {
     <div style={{ textAlign: "center" }}>
       {!loading && (
         <div>
-          <h1>{titleDisplay()}</h1>
+          <h3 className="codeDisplay">{code}</h3>
+          <h1 style={{ marginTop: "0px" }}>{titleDisplay()}</h1>
           <div
             style={{
               display: "flex",

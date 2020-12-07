@@ -3,8 +3,14 @@ import { gql } from "@apollo/client";
 //MUTATIONS:
 
 export const ADD_PLAYER_MUTATION = gql`
-  mutation addPlayer($name: String!) {
-    joinGame(name: $name)
+  mutation addPlayer($name: String!, $code: String!) {
+    joinGame(name: $name, code: $code)
+  }
+`;
+
+export const NEW_GAME_MUTATION = gql`
+  mutation newGame($name: String!) {
+    newGame(name: $name)
   }
 `;
 

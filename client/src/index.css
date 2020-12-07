@@ -45,3 +45,12 @@ label {
   justify-content: space-evenly;
   flex-wrap: wrap;
 }
+
+.codeDisplay {
+  text-align: left;
+  border: thin solid blue;
+  margin-left: 20px;
+  margin-bottom: 0px;
+  width: 50px;
+  padding: 15px;
+}
