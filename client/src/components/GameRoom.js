@@ -25,9 +25,22 @@ function GameRoom({ gameId, name, quit }) {
     },
   });
 
-  const [clearPlayers] = useMutation(CLEAR_PLAYERS_MUTATION);
+  const [clearPlayers] = useMutation(CLEAR_PLAYERS_MUTATION, {
+    onCompleted: () => {
+      // quit();
+    },
+  });
 
-  const { data, loading } = useSubscription(GAME_SUBSCRIPTION);
+  const { data, loading, error: subError } = useSubscription(
+    GAME_SUBSCRIPTION,
+    {
+      variables: { id: gameId },
+      onSubscriptionData: ({ subscriptionData: { data } }) => {
+        console.log("onSub", data);
+        if (!data.renameGame) quit();
+      },
+    }
+  );
 
   const moveHandler = (event) => {
     event.preventDefault();
@@ -38,7 +51,11 @@ function GameRoom({ gameId, name, quit }) {
     makeMove({ variables: { name, x, y } });
   };
 
+  if (subError) return <pre>{JSON.stringify(subError)}</pre>;
   if (!data) return <h4>LOADING...</h4>;
+
+  //Is this the best way to do this? is there a way in the subscription callbacks or with an error? I just made the field nullable
+  if (!data.renameGame) quit();
 
   let {
     renameGame: { player1, player2, turn, board, winner, code },
@@ -59,7 +76,9 @@ function GameRoom({ gameId, name, quit }) {
       {!loading && (
         <div>
           <h3 className="codeDisplay">{code}</h3>
-          <h1 style={{ marginTop: "0px" }}>{titleDisplay()}</h1>
+          <h1 style={{ marginTop: "0px", marginBottom: "50px" }}>
+            {titleDisplay()}
+          </h1>
           <div
             style={{
               display: "flex",
@@ -98,14 +117,7 @@ function GameRoom({ gameId, name, quit }) {
           Register
         </button>
       </div> */}
-      <button
-        onClick={() => {
-          clearPlayers();
-          quit();
-        }}
-      >
-        Start Over
-      </button>
+      <button onClick={clearPlayers}>Start Over</button>
     </div>
   );
 }

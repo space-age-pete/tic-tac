@@ -29,8 +29,8 @@ export const MAKE_MOVE_MUTATION = gql`
 //SUBSCRIPTIONS:
 
 export const GAME_SUBSCRIPTION = gql`
-  subscription {
-    renameGame {
+  subscription followGame($id: ID!) {
+    renameGame(id: $id) {
       id
       player1 {
         name

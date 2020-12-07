@@ -25,9 +25,10 @@ function Home({ join }) {
       // nameRef.current.value = "";
       //setName("");
       console.log(token);
-      console.log(jwtDecode(token));
       localStorage.setItem("jwtToken", token);
-      join({ name: joinName, token, gameId: 3 });
+      const decodedToken = jwtDecode(token);
+
+      join({ name: joinName, token, gameId: decodedToken.id });
     },
     onError: (err) => {
       setError(err.graphQLErrors?.[0]?.message);
@@ -41,11 +42,12 @@ function Home({ join }) {
       //setName("");
       console.log(token);
       console.log(jwtDecode(token));
+      const decodedToken = jwtDecode(token);
       localStorage.setItem("jwtToken", token);
 
       //should be recieving this info from backend as an object tbh
       //also need to subscribe to proper room
-      join({ name: newName, token, gameId: 3 });
+      join({ name: newName, token, gameId: decodedToken.id });
     },
     onError: (err) => {
       setError(err.graphQLErrors?.[0]?.message);

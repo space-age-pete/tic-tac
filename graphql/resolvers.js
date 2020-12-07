@@ -13,7 +13,7 @@ function generateToken(name, id) {
       id,
     },
     process.env.JWT_SECRET,
-    { expiresIn: "1h" }
+    { expiresIn: "2h" }
   );
 }
 
@@ -58,6 +58,9 @@ module.exports = {
 
         console.log(dbGame);
         const token = generateToken(name, dbGame._id);
+
+        pubsub.publish(GAME_CHANGE, { renameGame: dbGame });
+
         return token;
       } catch (err) {
         console.log(err);
@@ -66,27 +69,30 @@ module.exports = {
 
       return "whatever";
     },
-    clearPlayers: async (_, __, { pubsub }) => {
+    clearPlayers: async (_, __, { req, pubsub }) => {
       // const dbGame = await Game.findOne({});
       // dbGame.player1 = {};
       // dbGame.player2 = {};
       // dbGame.turn = "";
       //for Now:
-      await Game.findOneAndDelete({});
+      const player = await checkAuth(req);
+      console.log("player", player);
+
+      await Game.findByIdAndDelete(player.id);
 
       //technically needs to check but like come on
       // const code = generateCode();
       // const dbGame = Game.create({ code });
 
       // // dbGame.save();
-      // pubsub.publish(GAME_CHANGE, { renameGame: dbGame });
+      pubsub.publish(GAME_CHANGE, { renameGame: null });
       return `NO MORE PLAYERS`;
     },
     makeMove: async (_, { name, x, y }, { req, pubsub }) => {
-      const dbGame = await Game.findOne({});
-
       const player = await checkAuth(req);
       console.log("player", player);
+
+      const dbGame = await Game.findById(player.id);
 
       if (!dbGame.turn) throw new Error("The Game has not yet begun");
       if (dbGame.winner) throw new Error("The Game has ended");
@@ -131,8 +137,12 @@ module.exports = {
   },
   Subscription: {
     renameGame: {
-      subscribe: async (_, __, { pubsub }) => {
-        const dbGame = await Game.findOne({});
+      subscribe: async (_, { id }, { pubsub }) => {
+        //THIS IS THE ONLY ID NOT COMING FROM TOKEN
+        //STAY CONSISTENT
+
+        const dbGame = await Game.findById(id);
+        //set error?
         setTimeout(
           () => pubsub.publish(GAME_CHANGE, { renameGame: dbGame }),
           0
