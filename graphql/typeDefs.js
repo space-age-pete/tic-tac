@@ -24,6 +24,7 @@ module.exports = gql`
     clearPlayers: String!
     makeMove(name: String!, x: Int!, y: Int!): String!
     newGame(name: String!): String!
+    rematch: String!
   }
 
   type Subscription {

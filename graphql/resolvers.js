@@ -88,12 +88,32 @@ module.exports = {
       pubsub.publish(GAME_CHANGE, { renameGame: null });
       return `NO MORE PLAYERS`;
     },
+    rematch: async (_, __, { req, pubsub }) => {
+      const player = await checkAuth(req);
+      const dbGame = await Game.findById(player.id);
+
+      if (!dbGame) throw new Error("Game Not Found");
+
+      dbGame.board = JSON.stringify([
+        [0, 0, 0],
+        [0, 0, 0],
+        [0, 0, 0],
+      ]);
+      dbGame.winner = "";
+      dbGame.markCount = 0;
+      dbGame.turn = "player" + Math.floor(Math.random() * 2 + 1);
+      dbGame.save();
+
+      pubsub.publish(GAME_CHANGE, { renameGame: dbGame });
+      return "The Rematch has begun";
+    },
     makeMove: async (_, { name, x, y }, { req, pubsub }) => {
       const player = await checkAuth(req);
       console.log("player", player);
 
       const dbGame = await Game.findById(player.id);
 
+      if (!dbGame) throw new Error("Game Not Found");
       if (!dbGame.turn) throw new Error("The Game has not yet begun");
       if (dbGame.winner) throw new Error("The Game has ended");
       if (dbGame[dbGame.turn].name !== name)

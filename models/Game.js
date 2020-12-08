@@ -1,5 +1,4 @@
 const { Schema, model } = require("mongoose");
-const { Game } = require(".");
 
 const board = JSON.stringify([
   [0, 0, 0],

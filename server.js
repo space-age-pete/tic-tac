@@ -52,3 +52,11 @@ mongoose
 //keep track using timestamps perhaps?
 //model after jackbox -- have a vip who can start/restart?
 //still use 4-digit alphanumeric code?
+
+// more notes 12/08/2020
+
+// shouldn't be returning strings as a habit
+// return types defined in typedefs
+// resolve issue of sometimes using body, sometimes token for name/id
+// check if all games are being affected by all pubsub updates
+// if so, change code to avoid that (more than just GAME_CHANGE)?
