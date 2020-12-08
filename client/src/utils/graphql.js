@@ -20,6 +20,12 @@ export const CLEAR_PLAYERS_MUTATION = gql`
   }
 `;
 
+export const REMATCH_MUTATION = gql`
+  mutation {
+    rematch
+  }
+`;
+
 export const MAKE_MOVE_MUTATION = gql`
   mutation makeMove($name: String!, $x: Int!, $y: Int!) {
     makeMove(name: $name, x: $x, y: $y)

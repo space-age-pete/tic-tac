@@ -93,6 +93,7 @@ module.exports = {
       const dbGame = await Game.findById(player.id);
 
       if (!dbGame) throw new Error("Game Not Found");
+      if (!dbGame.turn) throw new Error("The Game has not yet begun");
 
       dbGame.board = JSON.stringify([
         [0, 0, 0],

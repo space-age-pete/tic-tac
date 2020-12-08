@@ -5,6 +5,7 @@ import {
   GAME_SUBSCRIPTION,
   CLEAR_PLAYERS_MUTATION,
   MAKE_MOVE_MUTATION,
+  REMATCH_MUTATION,
 } from "../utils/graphql";
 
 import GameBoard from "./GameBoard";
@@ -28,6 +29,13 @@ function GameRoom({ gameId, name, quit }) {
   const [clearPlayers] = useMutation(CLEAR_PLAYERS_MUTATION, {
     onCompleted: () => {
       // quit();
+    },
+  });
+
+  const [rematch] = useMutation(REMATCH_MUTATION, {
+    onError: (err) => {
+      console.log(JSON.stringify(err));
+      setError(err.graphQLErrors[0].message);
     },
   });
 
@@ -117,7 +125,9 @@ function GameRoom({ gameId, name, quit }) {
           Register
         </button>
       </div> */}
-      <button onClick={clearPlayers}>Start Over</button>
+
+      {turn && <button onClick={rematch}>Rematch</button>}
+      <button onClick={clearPlayers}>Quit</button>
     </div>
   );
 }
