@@ -15,7 +15,7 @@ const server = new ApolloServer({
 });
 
 mongoose
-  .connect("mongodb://localhost:27017/tic-tac", {
+  .connect(process.env.MONGODB_URI || "mongodb://localhost:27017/tic-tac", {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   })

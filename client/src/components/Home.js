@@ -8,17 +8,20 @@ import {
   // MAKE_MOVE_MUTATION,
 } from "../utils/graphql";
 import jwtDecode from "jwt-decode";
+import { Button, Divider, Form, Grid, Segment } from "semantic-ui-react";
 
 function Home({ join }) {
   const [joinName, setJoinName] = useState("");
   const [newName, setNewName] = useState("");
   const [code, setCode] = useState("");
-  const [error, setError] = useState("");
+  const [joinError, setJoinError] = useState("");
+  const [newError, setNewError] = useState("");
 
   useEffect(() => {
     console.log("this ran");
-    if (error) setTimeout(() => setError(""), 1000);
-  }, [error]);
+    if (joinError) setTimeout(() => setJoinError(""), 1000);
+    if (newError) setTimeout(() => setNewError(""), 1000);
+  }, [joinError, newError]);
 
   const [joinGame] = useMutation(ADD_PLAYER_MUTATION, {
     onCompleted({ joinGame: token }) {
@@ -31,7 +34,7 @@ function Home({ join }) {
       join({ name: joinName, token, gameId: decodedToken.id });
     },
     onError: (err) => {
-      setError(err.graphQLErrors?.[0]?.message);
+      setJoinError(err.graphQLErrors?.[0]?.message);
     },
     variables: { name: joinName, code },
   });
@@ -50,7 +53,7 @@ function Home({ join }) {
       join({ name: newName, token, gameId: decodedToken.id });
     },
     onError: (err) => {
-      setError(err.graphQLErrors?.[0]?.message);
+      setNewError(err.graphQLErrors?.[0]?.message);
     },
     variables: { name: newName },
   });
@@ -61,38 +64,54 @@ function Home({ join }) {
 
   return (
     <div>
-      <div className="container">
-        <div>
-          <h3>Join a Game:</h3>
-          <label htmlFor="codeInput">4-Digit Code:</label>
-          <input id="codeInput" value={code} onChange={codeInputHandler} />
-          <label htmlFor="nameInput">Name:</label>
-          <input
-            id="nameInput"
-            value={joinName}
-            onChange={(e) => setJoinName(e.target.value)}
-          />
-          <br />
-          <button onClick={joinGame} style={{ marginTop: "10px" }}>
-            JOIN GAME
-          </button>
-          <div style={{ height: "20px", margin: "25px", color: "red" }}>
-            {error}
-          </div>
-        </div>
-        <div>
-          <h3>Start a New Game:</h3>
-          <label htmlFor="nameInput">Name:</label>
-          <input id="nameInput" onChange={(e) => setNewName(e.target.value)} />
-          <br />
-          <button onClick={newGame} style={{ marginTop: "10px" }}>
-            CREATE GAME
-          </button>
-          <div style={{ height: "20px", margin: "25px", color: "red" }}>
-            {error}
-          </div>
-        </div>
-      </div>
+      <h1>TIC-TAC-TOE</h1>
+      <Segment placeholder>
+        <Grid columns={2} relaxed="very" stackable>
+          <Grid.Column>
+            <h3>Join a Game</h3>
+            <Form>
+              <Form.Input
+                icon="user"
+                iconPosition="left"
+                label="Name"
+                placeholder="Name"
+                value={joinName}
+                onChange={(e) => setJoinName(e.target.value)}
+              />
+              <Form.Input
+                icon="hashtag"
+                iconPosition="left"
+                label="4-Digit Room Code"
+                placeholder="Room Code"
+                value={code}
+                onChange={codeInputHandler}
+              />
+
+              <Button content="Login" primary onClick={joinGame} />
+            </Form>
+          </Grid.Column>
+
+          <Grid.Column
+          //  verticalAlign="middle"
+          >
+            <h3>Start a New Game</h3>
+            <Form>
+              <Form.Input
+                icon="user"
+                iconPosition="left"
+                label="Name"
+                placeholder="Name"
+                onChange={(e) => setNewName(e.target.value)}
+                value={newName}
+              />
+
+              <Button content="Create Game" primary onClick={newGame} />
+            </Form>
+          </Grid.Column>
+        </Grid>
+
+        <Divider vertical>Or</Divider>
+      </Segment>
     </div>
   );
 }

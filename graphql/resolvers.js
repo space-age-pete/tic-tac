@@ -48,6 +48,9 @@ module.exports = {
     newGame: async (_, { name }, { pubsub }) => {
       const code = generateCode();
       console.log(code);
+
+      if (!name.trim().length) throw new Error("that's not a name");
+
       try {
         const dbGame = await Game.create({
           code,
@@ -66,8 +69,6 @@ module.exports = {
         console.log(err);
         throw err;
       }
-
-      return "whatever";
     },
     clearPlayers: async (_, __, { req, pubsub }) => {
       // const dbGame = await Game.findOne({});
